@@ -26,7 +26,7 @@ pygame.display.set_icon(icono)
 # Variable de jugador
 img_jugador = pygame.image.load("images/astronave.png")
 jugador_x = 368
-jugador_y = 536
+jugador_y = 500
 jugador_x_cambio = 0
 
 
@@ -78,7 +78,18 @@ while se_ejecuta == True :
         jugador_x = 0
     if jugador_x >= 736:
         jugador_x= 736
-        
+    
+    # modificar ubicación del enemigo    
+    enemigo_x += enemigo_x_cambio   
+    
+    # mantener dentro de los bordes al enemigo   
+    if enemigo_x <=0:
+        enemigo_x_cambio = 0.3 # cambio de mov hacia la derecha
+        enemigo_y += enemigo_y_cambio
+    if enemigo_x >= 736:
+        enemigo_x_cambio = -0.3 # cambio de mov hacia la izquierda  
+        enemigo_y += enemigo_y_cambio 
+         
     jugador(jugador_x,jugador_y) # pintar jugador
     enemigo(enemigo_x,enemigo_y) 
     
