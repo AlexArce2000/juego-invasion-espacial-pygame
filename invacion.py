@@ -37,6 +37,13 @@ enemigo_y = random.randint(50, 200)
 enemigo_x_cambio = 1
 enemigo_y_cambio = 50
 
+# Variable de la bala 
+img_bala = pygame.image.load("images/bala.png")
+bala_x = 0
+bala_y = 500
+bala_x_cambio = 0
+bala_y_cambio = 1
+bala_visible = False
 
 
 
@@ -48,6 +55,11 @@ def jugador(x,y):
 def enemigo(x,y):
     pantalla.blit(img_enemigo, (x, y)) # arrojar (imagen, (posicionX,posicionY))
 
+# función dispara bala
+def disparar_bala(x,y):
+    global bala_visible
+    bala_visible=True
+    pantalla.blit(img_bala, (x+16,y+10))
 
 
 #Loop del juego 
@@ -59,12 +71,14 @@ while se_ejecuta == True :
         # evento cerrar programa
         if evento.type == pygame.QUIT:
             se_ejecuta = False
-        # evento presionar flechas
+        # evento presionar teclas
         if evento.type == pygame.KEYDOWN:
             if evento.key == pygame.K_LEFT:
                 jugador_x_cambio = -1
             if evento.key == pygame.K_RIGHT:
                 jugador_x_cambio = 1
+            if evento.key == pygame.K_SPACE:
+                disparar_bala(jugador_x, bala_y)
         # evento soltar flechas    
         if evento.type == pygame.KEYUP: # Suelta la tecla
             if evento.key == pygame.K_LEFT or evento.key == pygame.K_RIGHT:
@@ -76,7 +90,7 @@ while se_ejecuta == True :
     # mantener dentro de los bordes al jugador   
     if jugador_x <=0:
         jugador_x = 0
-    if jugador_x >= 736:
+    elif jugador_x >= 736:
         jugador_x= 736
     
     # modificar ubicación del enemigo    
@@ -86,9 +100,14 @@ while se_ejecuta == True :
     if enemigo_x <=0:
         enemigo_x_cambio = 1 # cambio de mov hacia la derecha
         enemigo_y += enemigo_y_cambio
-    if enemigo_x >= 736:
+    elif enemigo_x >= 736:
         enemigo_x_cambio = -1 # cambio de mov hacia la izquierda  
         enemigo_y += enemigo_y_cambio 
+        
+    # movimiento bala
+    if bala_visible:
+        disparar_bala(jugador_x,bala_y)
+        bala_y -= bala_y_cambio
          
     jugador(jugador_x,jugador_y) # pintar jugador
     enemigo(enemigo_x,enemigo_y) 
