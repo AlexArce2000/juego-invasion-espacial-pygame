@@ -1,6 +1,6 @@
 import pygame
 import random
-
+import math
 pygame.init() # inicializar pygame 
 
 # crear la pantalla
@@ -34,7 +34,7 @@ jugador_x_cambio = 0
 img_enemigo = pygame.image.load("images/enemigo.png")
 enemigo_x = random.randint(0, 736)
 enemigo_y = random.randint(50, 200)
-enemigo_x_cambio = 1
+enemigo_x_cambio = 0.5
 enemigo_y_cambio = 50
 
 # Variable de la bala 
@@ -42,10 +42,11 @@ img_bala = pygame.image.load("images/bala.png")
 bala_x = 0
 bala_y = 500
 bala_x_cambio = 0
-bala_y_cambio = 1
+bala_y_cambio = 3
 bala_visible = False
 
-
+# puntaje 
+puntaje = 0
 
 #Funcion jugador 
 def jugador(x,y):
@@ -61,7 +62,13 @@ def disparar_bala(x,y):
     bala_visible=True
     pantalla.blit(img_bala, (x+16,y+10))
 
-
+# función detectar colisiones
+def hay_colision(x_1, y_1, x_2, y_2):
+    distancia = math.sqrt(math.pow(x_2-x_1,2)+math.pow(y_2-y_1,2)) #distancia entre dos puntos
+    if distancia < 27:
+        return True
+    else:
+        return False
 #Loop del juego 
 se_ejecuta = True
 while se_ejecuta == True :
@@ -115,7 +122,16 @@ while se_ejecuta == True :
     if bala_visible:
         disparar_bala(bala_x,bala_y)
         bala_y -= bala_y_cambio
-         
+    
+    # colisión 
+    colision = hay_colision(enemigo_x, enemigo_y, bala_x, bala_y)
+    if colision:
+        bala_y=500
+        bala_visible= False  
+        puntaje +=1
+        print(puntaje)
+        enemigo_x = random.randint(0, 736)
+        enemigo_y = random.randint(50, 200)   
     jugador(jugador_x,jugador_y) # pintar jugador
     enemigo(enemigo_x,enemigo_y) 
     
