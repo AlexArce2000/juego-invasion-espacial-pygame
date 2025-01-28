@@ -17,5 +17,5 @@
    pip install -r requirements.txt
 3. Ejecutar el juego con:
 ```bash
-    python main.py
+    python invasion.py
 ```
