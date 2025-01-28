@@ -100,6 +100,35 @@ def hay_colision(x_1, y_1, x_2, y_2):
         return True
     else:
         return False
+    
+# Función para mostrar el menú inicial
+def mostrar_menu():
+    fuente_menu = pygame.font.Font('freesansbold.ttf', 64)
+    texto_menu = fuente_menu.render("Invación Espacial", True, (255, 255, 255))
+    texto_iniciar = fuente.render("Presiona ESPACIO para comenzar", True, (255, 255, 255))
+    texto_salir = fuente.render("Presiona ESC para salir", True, (255, 255, 255))
+    
+    pantalla.blit(texto_menu, (150, 200))
+    pantalla.blit(texto_iniciar, (150, 350))
+    pantalla.blit(texto_salir, (150, 400))
+
+# Loop del menú inicial
+en_menu = True
+while en_menu:
+    pantalla.blit(fondo, (0, 0))
+    mostrar_menu()
+    pygame.display.update()
+
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            en_menu = False
+            se_ejecuta = False
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_SPACE:
+                en_menu = False
+            if evento.key == pygame.K_ESCAPE:
+                en_menu = False
+                se_ejecuta = False
 #Loop del juego 
 se_ejecuta = True
 while se_ejecuta == True :
