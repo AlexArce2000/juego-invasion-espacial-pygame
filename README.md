@@ -13,6 +13,7 @@
 2. Instala las dependencias ejecutando:
 ```bash
 pip install -r requirements.txt
+```
 3. Ejecutar el juego con:
 ```bash
 python invasion.py
