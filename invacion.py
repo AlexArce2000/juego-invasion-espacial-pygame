@@ -1,6 +1,8 @@
 import pygame
 import random
 import math
+from pygame import mixer
+
 pygame.init() # inicializar pygame 
 
 # crear la pantalla
@@ -11,6 +13,11 @@ pygame.display.set_caption("Invación espacial") # 32 px
 icono = pygame.image.load("images/alien.png") # para cargarle imagenes
 pygame.display.set_icon(icono)
 fondo = pygame.image.load("images/galaxia_fondo.jpg")
+
+# agregar musica
+mixer.music.load('music/musicafondo.wav')
+mixer.music.set_volume(0.3)
+mixer.music.play(-1)
 # jugador - datos
 # protagonista 64px
 # Para ubicarlos al medio 
@@ -59,6 +66,8 @@ fuente = pygame.font.Font('freesansbold.ttf',32)
 texto_x = 10
 texto_y = 10
 
+
+
 # función mostrar puntaje 
 def mostrar_puntaje(x,y):
     texto = fuente.render(f"Puntaje: {puntaje}",True, (255,255,255))
@@ -101,6 +110,9 @@ while se_ejecuta == True :
             if evento.key == pygame.K_RIGHT:
                 jugador_x_cambio = 1
             if evento.key == pygame.K_SPACE:
+                sonido_bala = mixer.Sound('music/disparo.mp3')
+                sonido_bala.set_volume(0.35)
+                sonido_bala.play()
                 if bala_visible == False:
                     bala_x = jugador_x
                     disparar_bala(bala_x, bala_y)
@@ -120,7 +132,13 @@ while se_ejecuta == True :
         jugador_x= 736
     
     # modificar ubicación del enemigo 
-    for e in range(cantidad_enemigos):       
+    for e in range(cantidad_enemigos):    
+        #  fin del juego 
+        if enemigo_y[e]>250:
+            for k in range(cantidad_enemigos):
+                enemigo_y[e] = 1000
+            #texto_final()
+            break
         enemigo_x[e] += enemigo_x_cambio[e]   
     
     # mantener dentro de los bordes al enemigo   
@@ -134,6 +152,9 @@ while se_ejecuta == True :
         # colisión 
         colision = hay_colision(enemigo_x[e], enemigo_y[e], bala_x, bala_y)
         if colision:
+            sonido_colision = mixer.Sound('music/golpe.mp3')
+            sonido_colision.set_volume(0.35)
+            sonido_colision.play()
             bala_y=500
             bala_visible= False  
             puntaje +=1
