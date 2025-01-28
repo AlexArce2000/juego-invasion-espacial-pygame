@@ -1,9 +1,7 @@
 # Invasión Espacial 🚀👾
 **Invasión Espacial** es un videojuego arcade en 2D desarrollado con `Pygame`, inspirado en los clásicos juegos de disparos espaciales.
 
-![](images/MenuJuegoScreen.png)
-
-![](images/JuegoScreen.png)
+![](images/Invasión-espacial.gif)
 
 ## 🕹️ Controles
 - **Izquierda/Derecha**: Mueve la nave.
