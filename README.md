@@ -11,9 +11,9 @@
 ## ⚙️ Requisitos
 1. Clonar el repositorio.
 2. Instala las dependencias ejecutando:
-   ```bash
-   pip install -r requirements.txt
+```bash
+pip install -r requirements.txt
 3. Ejecutar el juego con:
 ```bash
-    python invasion.py
+python invasion.py
 ```
