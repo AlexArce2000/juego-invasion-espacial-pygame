@@ -9,7 +9,7 @@ pygame.init() # inicializar pygame
 pantalla = pygame.display.set_mode((800,600))
 
 # Titulo e icono 
-pygame.display.set_caption("Invación espacial") # 32 px
+pygame.display.set_caption("Invasión espacial") # 32 px
 icono = pygame.image.load("images/alien.png") # para cargarle imagenes
 pygame.display.set_icon(icono)
 fondo = pygame.image.load("images/galaxia_fondo.jpg")
@@ -51,6 +51,10 @@ for e in range(cantidad_enemigos):
     enemigo_y.append(random.randint(50, 200))
     enemigo_x_cambio.append(2) # velocidad de los enemigos
     enemigo_y_cambio.append(50)
+
+# variable explosion
+img_explosion = pygame.image.load("images/explosion.png")
+
 
 # Variable de la bala 
 img_bala = pygame.image.load("images/bala.png")
@@ -154,6 +158,10 @@ def loop_menu():
 def loop_juego():
     global jugador_x, jugador_y, jugador_x_cambio, bala_x, bala_y, bala_visible, puntaje
 
+    # Variables para manejar explosiones
+    explosion_activa = [False] * cantidad_enemigos
+    explosion_timer = [0] * cantidad_enemigos
+
     se_ejecuta = True
     while se_ejecuta:
         pantalla.blit(fondo, (0, 0))
@@ -189,66 +197,60 @@ def loop_juego():
 
         # Modificar ubicación del enemigo
         for e in range(cantidad_enemigos):
-            # Fin del juego si un enemigo toca al jugador
-            if hay_colision(jugador_x, jugador_y, enemigo_x[e], enemigo_y[e]):
-                for k in range(cantidad_enemigos):
-                    enemigo_y[k] = 1000  # Mover a los enemigos fuera de la pantalla
-                opcion = texto_final()  # Mostrar pantalla de "GAME OVER" y esperar input
+            if explosion_activa[e]:
+                # Mostrar la explosión
+                pantalla.blit(img_explosion, (enemigo_x[e], enemigo_y[e]))
 
-                if opcion == "menu":
-                    # Reiniciar variables del juego
-                    jugador_x = 368
-                    jugador_y = 500
-                    puntaje = 0
+                # Verificar si han pasado 500ms desde que inició la explosión
+                if pygame.time.get_ticks() - explosion_timer[e] > 500:
+                    explosion_activa[e] = False
+                    enemigo_x[e] = random.randint(0, 736)
+                    enemigo_y[e] = random.randint(50, 200)
+            else:
+                # Fin del juego si un enemigo toca al jugador
+                if hay_colision(jugador_x, jugador_y, enemigo_x[e], enemigo_y[e]):
+                    for k in range(cantidad_enemigos):
+                        enemigo_y[k] = 1000  # Mover a los enemigos fuera de la pantalla
+                    opcion = texto_final()  # Mostrar pantalla de "GAME OVER" y esperar input
+
+                    if opcion == "menu":
+                        # Reiniciar variables del juego
+                        jugador_x = 368
+                        jugador_y = 500
+                        puntaje = 0
+                        bala_visible = False
+                        for e in range(cantidad_enemigos):
+                            enemigo_x[e] = random.randint(0, 736)
+                            enemigo_y[e] = random.randint(50, 200)
+                        return "menu"
+                    elif opcion == "salir":
+                        return "salir"
+
+                enemigo_x[e] += enemigo_x_cambio[e]
+
+                # Mantener dentro de los bordes al enemigo
+                if enemigo_x[e] <= 0:
+                    enemigo_x_cambio[e] = 1
+                    enemigo_y[e] += enemigo_y_cambio[e]
+                elif enemigo_x[e] >= 736:
+                    enemigo_x_cambio[e] = -1
+                    enemigo_y[e] += enemigo_y_cambio[e]
+
+                # Colisión entre bala y enemigo
+                colision = hay_colision(enemigo_x[e], enemigo_y[e], bala_x, bala_y)
+                if colision:
+                    sonido_colision = mixer.Sound('music/golpe.mp3')
+                    sonido_colision.set_volume(0.35)
+                    sonido_colision.play()
+                    bala_y = 500
                     bala_visible = False
-                    for e in range(cantidad_enemigos):
-                        enemigo_x[e] = random.randint(0, 736)
-                        enemigo_y[e] = random.randint(50, 200)
-                    return "menu"
-                elif opcion == "salir":
-                    return "salir"
+                    puntaje += 1
 
-            # Fin del juego si los enemigos llegan al final de la pantalla
-            if enemigo_y[e] > 500:
-                for k in range(cantidad_enemigos):
-                    enemigo_y[k] = 1000
-                opcion = texto_final()
+                    # Activar la explosión
+                    explosion_activa[e] = True
+                    explosion_timer[e] = pygame.time.get_ticks()
 
-                if opcion == "menu":
-                    # Reiniciar variables del juego
-                    jugador_x = 368
-                    jugador_y = 500
-                    puntaje = 0
-                    bala_visible = False
-                    for e in range(cantidad_enemigos):
-                        enemigo_x[e] = random.randint(0, 736)
-                        enemigo_y[e] = random.randint(50, 200)
-                    return "menu"
-                elif opcion == "salir":
-                    return "salir"
-
-            enemigo_x[e] += enemigo_x_cambio[e]
-
-            # Mantener dentro de los bordes al enemigo
-            if enemigo_x[e] <= 0:
-                enemigo_x_cambio[e] = 1
-                enemigo_y[e] += enemigo_y_cambio[e]
-            elif enemigo_x[e] >= 736:
-                enemigo_x_cambio[e] = -1
-                enemigo_y[e] += enemigo_y_cambio[e]
-
-            # Colisión entre bala y enemigo
-            colision = hay_colision(enemigo_x[e], enemigo_y[e], bala_x, bala_y)
-            if colision:
-                sonido_colision = mixer.Sound('music/golpe.mp3')
-                sonido_colision.set_volume(0.35)
-                sonido_colision.play()
-                bala_y = 500
-                bala_visible = False
-                puntaje += 1
-                enemigo_x[e] = random.randint(0, 736)
-                enemigo_y[e] = random.randint(50, 200)
-            enemigo(enemigo_x[e], enemigo_y[e], e)
+                enemigo(enemigo_x[e], enemigo_y[e], e)
 
         # Movimiento de la bala
         if bala_y <= -64:
