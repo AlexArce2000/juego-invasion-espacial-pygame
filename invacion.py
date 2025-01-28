@@ -66,6 +66,12 @@ fuente = pygame.font.Font('freesansbold.ttf',32)
 texto_x = 10
 texto_y = 10
 
+# texto final del juego
+fuente_final = pygame.font.Font('font/CrazyStormDemoRegular.ttf',55)
+
+def texto_final():
+    mi_fuente_final = fuente_final.render("GAME OVER", True,(255,255,255))
+    pantalla.blit(mi_fuente_final,(250,200))
 
 
 # función mostrar puntaje 
@@ -134,10 +140,10 @@ while se_ejecuta == True :
     # modificar ubicación del enemigo 
     for e in range(cantidad_enemigos):    
         #  fin del juego 
-        if enemigo_y[e]>250:
+        if enemigo_y[e] > 500:
             for k in range(cantidad_enemigos):
-                enemigo_y[e] = 1000
-            #texto_final()
+                enemigo_y[k] = 1000
+            texto_final()
             break
         enemigo_x[e] += enemigo_x_cambio[e]   
     
