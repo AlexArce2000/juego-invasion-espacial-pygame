@@ -75,9 +75,8 @@ fuente_final = pygame.font.Font('font/CrazyStormDemoRegular.ttf',55)
 
 # Función para mostrar el texto final
 def texto_final():
-    mi_fuente_final = fuente_final.render("GAME OVER", True, (255, 255, 255))
-    pantalla.blit(mi_fuente_final, (250, 200))
-
+    imagen_final = pygame.image.load("images/gameover.png") 
+    pantalla.blit(imagen_final, (150, 150))
     # Mostrar opciones
     opcion_volver = fuente.render("Presiona ESPACIO para volver al menú", True, (255, 255, 255))
     opcion_salir = fuente.render("Presiona ESC para salir", True, (255, 255, 255))
